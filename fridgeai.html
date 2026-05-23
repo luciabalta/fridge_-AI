@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FridgeAI – Menos desperdicio, más sabor.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #2D6A4F;
+    --green-mid: #52B788;
+    --green-soft: #95D5B2;
+    --green-pale: #D8F3DC;
+    --yellow: #F4C430;
+    --yellow-light: #FFF3B0;
+    --white: #FAFAF8;
+    --off-white: #F0F4EF;
+    --dark: #1A2E22;
+    --text-mid: #4A6358;
+    --text-light: #7A9A88;
+    --red-soft: #E07A5F;
+    --orange-soft: #F2A65A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(250,250,248,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(82,183,136,0.15);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 900;
+    color: var(--green-deep);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { color: var(--yellow); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--text-mid);
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--green-deep); }
+  .nav-cta {
+    background: var(--green-deep); color: white;
+    border: none; padding: 10px 24px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.25s;
+  }
+  .nav-cta:hover { background: var(--green-mid); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(45,106,79,0.3); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    gap: 60px;
+    background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(149,213,178,0.18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 10% 80%, rgba(244,196,48,0.1) 0%, transparent 60%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(149,213,178,0.25), transparent 70%);
+    animation: float 8s ease-in-out infinite;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: 40px; left: 80px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(244,196,48,0.15), transparent 70%);
+    animation: float 10s ease-in-out infinite reverse;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  .hero-text { position: relative; z-index: 2; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green-pale); color: var(--green-deep);
+    padding: 6px 16px; border-radius: 50px;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
+    margin-bottom: 24px;
+    border: 1px solid rgba(82,183,136,0.3);
+    animation: fadeInUp 0.6s ease both;
+  }
+  .hero-badge::before { content: '🌱'; font-size: 0.85rem; }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 900; line-height: 1.1;
+    color: var(--dark);
+    animation: fadeInUp 0.7s ease 0.1s both;
+  }
+  h1 .accent { color: var(--green-mid); font-style: italic; }
+  h1 .yellow { color: var(--yellow); }
+
+  .hero-sub {
+    margin-top: 20px; margin-bottom: 36px;
+    font-size: 1.1rem; font-weight: 300; line-height: 1.7;
+    color: var(--text-mid); max-width: 480px;
+    animation: fadeInUp 0.7s ease 0.2s both;
+  }
+
+  .hero-btns {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    animation: fadeInUp 0.7s ease 0.3s both;
+  }
+  .btn-primary {
+    background: var(--green-deep); color: white;
+    border: none; padding: 14px 32px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all 0.25s;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 8px 32px rgba(45,106,79,0.25);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(45,106,79,0.35); background: #235540; }
+  .btn-secondary {
+    background: transparent; color: var(--green-deep);
+    border: 2px solid var(--green-deep); padding: 14px 32px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all 0.25s;
+  }
+  .btn-secondary:hover { background: var(--green-pale); transform: translateY(-2px); }
+
+  .hero-stats {
+    display: flex; gap: 32px; margin-top: 48px;
+    animation: fadeInUp 0.7s ease 0.4s both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 900; color: var(--green-deep);
+    line-height: 1;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--text-light); margin-top: 4px; font-weight: 500; }
+
+  /* ── PHONE MOCKUP ── */
+  .hero-phone {
+    display: flex; justify-content: center; align-items: center;
+    position: relative; z-index: 2;
+    animation: fadeInUp 0.8s ease 0.2s both;
+  }
+  .phone-wrap {
+    position: relative;
+    filter: drop-shadow(0 40px 80px rgba(45,106,79,0.25)) drop-shadow(0 20px 40px rgba(0,0,0,0.1));
+  }
+  .phone {
+    width: 300px;
+    background: #0f1a13;
+    border-radius: 44px;
+    padding: 14px;
+    border: 2px solid #2a3d2e;
+    position: relative;
+  }
+  .phone-notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 90px; height: 26px; background: #0f1a13;
+    border-radius: 0 0 16px 16px; z-index: 10;
+  }
+  .phone-screen {
+    background: var(--white);
+    border-radius: 34px;
+    overflow: hidden;
+    height: 580px;
+    position: relative;
+  }
+
+  /* APP SCREEN CONTENT */
+  .app-screen {
+    height: 100%; display: flex; flex-direction: column;
+    font-size: 11px;
+  }
+  .app-statusbar {
+    background: var(--white); padding: 14px 20px 8px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .app-statusbar .time { font-weight: 700; font-size: 10px; color: var(--dark); }
+  .app-statusbar .icons { font-size: 9px; color: var(--dark); }
+
+  .app-header {
+    padding: 4px 20px 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--white);
+  }
+  .app-greeting .buenos { font-size: 10px; color: var(--text-light); font-weight: 400; }
+  .app-greeting .name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--dark); margin-top: 1px; }
+  .app-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 13px; font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    box-shadow: 0 3px 10px rgba(45,106,79,0.3);
+  }
+
+  /* Summary card */
+  .app-card {
+    margin: 0 14px;
+    background: linear-gradient(135deg, var(--green-deep) 0%, #3a7d5e 100%);
+    border-radius: 20px; padding: 14px 16px;
+    color: white;
+    box-shadow: 0 8px 24px rgba(45,106,79,0.3);
+  }
+  .app-card-title { font-size: 9px; opacity: 0.75; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+  .app-card-stats { display: flex; justify-content: space-between; }
+  .app-stat-item { text-align: center; }
+  .app-stat-icon { font-size: 16px; margin-bottom: 3px; }
+  .app-stat-val { font-weight: 700; font-size: 14px; line-height: 1; }
+  .app-stat-lbl { font-size: 8px; opacity: 0.7; margin-top: 2px; line-height: 1.2; }
+  .app-card-divider { width: 1px; background: rgba(255,255,255,0.2); align-self: stretch; margin: 0 4px; }
+
+  /* Scan button */
+  .app-scan-area { padding: 14px 14px 10px; }
+  .app-scan-btn {
+    width: 100%; background: linear-gradient(135deg, var(--green-soft), var(--green-mid));
+    border: none; border-radius: 20px; padding: 16px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(82,183,136,0.4);
+    transition: transform 0.2s;
+  }
+  .app-scan-btn:hover { transform: scale(1.02); }
+  .scan-icon {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+  .scan-text .scan-label { font-size: 13px; font-weight: 700; color: var(--dark); }
+  .scan-text .scan-sub { font-size: 9px; color: var(--text-mid); margin-top: 1px; }
+
+  /* Inventory */
+  .app-inventory { padding: 2px 14px 10px; flex: 1; overflow: hidden; }
+  .inv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .inv-title { font-weight: 700; font-size: 11px; color: var(--dark); }
+  .inv-see-all { font-size: 9px; color: var(--green-mid); font-weight: 600; }
+
+  .inv-item {
+    background: var(--off-white); border-radius: 14px; padding: 10px 12px;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+  }
+  .inv-emoji { font-size: 18px; flex-shrink: 0; }
+  .inv-info { flex: 1; min-width: 0; }
+  .inv-name { font-weight: 600; font-size: 10px; color: var(--dark); }
+  .inv-meta { font-size: 8.5px; color: var(--text-light); margin-top: 1px; }
+  .inv-bar-wrap { height: 4px; background: #E2EDE6; border-radius: 4px; margin-top: 5px; overflow: hidden; }
+  .inv-bar { height: 100%; border-radius: 4px; transition: width 0.4s; }
+  .bar-green { background: linear-gradient(90deg, var(--green-mid), var(--green-soft)); }
+  .bar-yellow { background: linear-gradient(90deg, var(--yellow), #f9d94a); }
+  .bar-red { background: linear-gradient(90deg, var(--red-soft), var(--orange-soft)); }
+  .inv-days { font-size: 8px; font-weight: 700; flex-shrink: 0; }
+  .days-ok { color: var(--green-mid); }
+  .days-warn { color: var(--yellow); }
+  .days-danger { color: var(--red-soft); }
+
+  /* Bottom nav */
+  .app-bottom-nav {
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 8px 0 10px;
+    border-top: 1px solid #E8EDE9;
+    background: var(--white);
+  }
+  .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .nav-icon { font-size: 16px; }
+  .nav-label { font-size: 8px; color: var(--text-light); font-weight: 500; }
+  .nav-active .nav-label { color: var(--green-deep); font-weight: 700; }
+  .nav-active .nav-icon { filter: none; }
+
+  /* Floating decorations around phone */
+  .phone-deco {
+    position: absolute; background: white; border-radius: 16px;
+    padding: 10px 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    font-size: 0.75rem; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    animation: floatDeco 6s ease-in-out infinite;
+    white-space: nowrap;
+  }
+  .deco-1 { right: -30px; top: 90px; animation-delay: 0s; }
+  .deco-2 { left: -40px; bottom: 140px; animation-delay: 2s; }
+  .deco-3 { right: -20px; bottom: 80px; animation-delay: 4s; }
+  @keyframes floatDeco {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .deco-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-green { background: var(--green-mid); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-red { background: var(--red-soft); }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── FEATURES ── */
+  .features {
+    padding: 100px 48px;
+    background: var(--off-white);
+    position: relative;
+  }
+  .features::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green-soft), transparent);
+  }
+  .section-label {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--green-mid);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem); font-weight: 900;
+    color: var(--dark); line-height: 1.15; max-width: 600px;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    color: var(--text-mid); font-size: 1rem; line-height: 1.7;
+    max-width: 540px; font-weight: 300; margin-bottom: 64px;
+  }
+
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .feature-card {
+    background: var(--white); border-radius: 24px; padding: 32px;
+    border: 1px solid rgba(82,183,136,0.15);
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(149,213,178,0.08), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .feature-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(45,106,79,0.12); border-color: var(--green-soft); }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon-wrap {
+    width: 52px; height: 52px; border-radius: 16px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
+  }
+  .icon-green { background: var(--green-pale); }
+  .icon-yellow { background: var(--yellow-light); }
+  .icon-soft { background: #F0EBF4; }
+  .feature-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--dark); margin-bottom: 10px; }
+  .feature-desc { color: var(--text-mid); font-size: 0.9rem; line-height: 1.65; font-weight: 300; }
+
+  /* ── COMPARISON ── */
+  .comparison { padding: 100px 48px; }
+  .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 64px; }
+  .comp-card {
+    border-radius: 28px; padding: 40px; position: relative; overflow: hidden;
+  }
+  .comp-traditional {
+    background: #F5F5F3; border: 2px solid #E0E0DA;
+  }
+  .comp-fridgeai {
+    background: linear-gradient(135deg, var(--green-deep), #3a7d5e);
+    color: white;
+    box-shadow: 0 24px 64px rgba(45,106,79,0.3);
+  }
+  .comp-fridgeai::before {
+    content: '★ RECOMENDADO';
+    position: absolute; top: 20px; right: 20px;
+    background: var(--yellow); color: var(--dark);
+    font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em;
+    padding: 5px 12px; border-radius: 50px;
+  }
+  .comp-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; margin-bottom: 8px; }
+  .comp-trad-logo { color: var(--text-light); }
+  .comp-ai-logo { color: white; }
+  .comp-ai-logo span { color: var(--yellow); }
+  .comp-tagline { font-size: 0.8rem; font-weight: 400; margin-bottom: 32px; }
+  .comp-trad-tagline { color: var(--text-light); }
+  .comp-ai-tagline { color: rgba(255,255,255,0.7); }
+
+  .comp-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid;
+    font-size: 0.88rem;
+  }
+  .comp-row:last-child { border-bottom: none; }
+  .comp-traditional .comp-row { border-color: rgba(0,0,0,0.08); }
+  .comp-fridgeai .comp-row { border-color: rgba(255,255,255,0.15); }
+  .comp-row-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .comp-row-text strong { display: block; font-weight: 600; margin-bottom: 2px; }
+  .comp-row-text span { font-size: 0.78rem; opacity: 0.7; }
+  .comp-traditional .comp-row-text { color: #666; }
+  .comp-fridgeai .comp-row-text { color: white; }
+
+  /* ── CTA ── */
+  .cta-section {
+    padding: 100px 48px;
+    background: linear-gradient(135deg, var(--green-deep) 0%, #1e4d38 50%, #2d6a4f 100%);
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .cta-badge {
+    display: inline-block; background: rgba(244,196,48,0.2); color: var(--yellow);
+    border: 1px solid rgba(244,196,48,0.4);
+    padding: 6px 18px; border-radius: 50px; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 24px;
+    position: relative;
+  }
+  .cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 900;
+    color: white; line-height: 1.1; max-width: 700px;
+    margin: 0 auto 20px; position: relative;
+  }
+  .cta-section h2 em { color: var(--yellow); font-style: normal; }
+  .cta-sub {
+    color: rgba(255,255,255,0.65); font-size: 1.05rem; font-weight: 300;
+    line-height: 1.7; max-width: 500px; margin: 0 auto 40px; position: relative;
+  }
+  .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; }
+  .btn-white {
+    background: white; color: var(--green-deep);
+    border: none; padding: 16px 36px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.25s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .btn-white:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(0,0,0,0.25); }
+  .btn-outline-white {
+    background: transparent; color: white;
+    border: 2px solid rgba(255,255,255,0.5); padding: 16px 36px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all 0.25s;
+  }
+  .btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+  .cta-trust { display: flex; gap: 32px; justify-content: center; margin-top: 48px; flex-wrap: wrap; position: relative; }
+  .trust-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.6); font-size: 0.83rem; font-weight: 500; }
+  .trust-icon { font-size: 1rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark); color: rgba(255,255,255,0.5);
+    padding: 40px 48px; display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.83rem;
+  }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 900; color: white; }
+  .footer-logo span { color: var(--yellow); }
+  .footer-tagline { font-style: italic; margin-top: 4px; font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--green-soft); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; text-align: center; padding: 100px 24px 60px; }
+    .hero-btns, .hero-stats { justify-content: center; }
+    .hero-phone { order: -1; }
+    .features-grid { grid-template-columns: 1fr; }
+    .comparison-grid { grid-template-columns: 1fr; }
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .features, .comparison, .cta-section { padding: 60px 24px; }
+    footer { flex-direction: column; gap: 20px; text-align: center; padding: 32px 24px; }
+    .phone-deco { display: none; }
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Fridge<span>AI</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Funciones</a></li>
+    <li><a href="#comparison">Comparativa</a></li>
+    <li><a href="#cta">Descargar</a></li>
+  </ul>
+  <button class="nav-cta">Comenzar gratis</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-badge">Zero Waste Assistant</div>
+    <h1>
+      Tu nevera,<br>
+      <span class="accent">inteligente</span> y sin<br>
+      <span class="yellow">desperdicios.</span>
+    </h1>
+    <p class="hero-sub">
+      FridgeAI usa visión computarizada para convertir tu cámara en un inventario automático. Recetas personalizadas, alertas de caducidad, y ahorro real cada mes.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary">📱 Descargar App</button>
+      <button class="btn-secondary">Ver demo →</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">$45</div>
+        <div class="stat-label">ahorrados / mes</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">12+</div>
+        <div class="stat-label">recetas posibles</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0%</div>
+        <div class="stat-label">desperdicio meta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE MOCKUP -->
+  <div class="hero-phone">
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="app-screen">
+
+            <!-- Status bar -->
+            <div class="app-statusbar">
+              <span class="time">9:41</span>
+              <span class="icons">●●● 📶 🔋</span>
+            </div>
+
+            <!-- Header -->
+            <div class="app-header">
+              <div class="app-greeting">
+                <div class="buenos">Buenos días,</div>
+                <div class="name">Lucía ✨</div>
+              </div>
+              <div class="app-avatar">L</div>
+            </div>
+
+            <!-- Summary card -->
+            <div class="app-card">
+              <div class="app-card-title">Resumen de hoy</div>
+              <div class="app-card-stats">
+                <div class="app-stat-item">
+                  <div class="app-stat-icon">⚠️</div>
+                  <div class="app-stat-val">2</div>
+                  <div class="app-stat-lbl">por<br>vencer</div>
+                </div>
+                <div class="app-card-divider"></div>
+                <div class="app-stat-item">
+                  <div class="app-stat-icon">🍽️</div>
+                  <div class="app-stat-val">12</div>
+                  <div class="app-stat-lbl">recetas<br>posibles</div>
+                </div>
+                <div class="app-card-divider"></div>
+                <div class="app-stat-item">
+                  <div class="app-stat-icon">💵</div>
+                  <div class="app-stat-val">$45</div>
+                  <div class="app-stat-lbl">ahorrado<br>este mes</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scan button -->
+            <div class="app-scan-area">
+              <button class="app-scan-btn">
+                <div class="scan-icon">📷</div>
+                <div class="scan-text">
+                  <div class="scan-label">Escanear Nevera</div>
+                  <div class="scan-sub">Actualizar inventario al instante</div>
+                </div>
+              </button>
+            </div>
+
+            <!-- Inventory -->
+            <div class="app-inventory">
+              <div class="inv-header">
+                <span class="inv-title">🧊 Inventario Inteligente</span>
+                <span class="inv-see-all">Ver todo →</span>
+              </div>
+
+              <div class="inv-item">
+                <div class="inv-emoji">🥛</div>
+                <div class="inv-info">
+                  <div class="inv-name">Leche entera</div>
+                  <div class="inv-meta">1L · Parmalat</div>
+                  <div class="inv-bar-wrap"><div class="inv-bar bar-yellow" style="width:40%"></div></div>
+                </div>
+                <div class="inv-days days-warn">2d</div>
+              </div>
+
+              <div class="inv-item">
+                <div class="inv-emoji">🍅</div>
+                <div class="inv-info">
+                  <div class="inv-name">Tomates cherry</div>
+                  <div class="inv-meta">250g · Mercado</div>
+                  <div class="inv-bar-wrap"><div class="inv-bar bar-red" style="width:20%"></div></div>
+                </div>
+                <div class="inv-days days-danger">1d</div>
+              </div>
+
+              <div class="inv-item">
+                <div class="inv-emoji">🥦</div>
+                <div class="inv-info">
+                  <div class="inv-name">Brócoli fresco</div>
+                  <div class="inv-meta">1 unidad · Orgánico</div>
+                  <div class="inv-bar-wrap"><div class="inv-bar bar-green" style="width:75%"></div></div>
+                </div>
+                <div class="inv-days days-ok">5d</div>
+              </div>
+            </div>
+
+            <!-- Bottom nav -->
+            <div class="app-bottom-nav">
+              <div class="bottom-nav-item nav-active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Inicio</span>
+              </div>
+              <div class="bottom-nav-item">
+                <span class="nav-icon">🧊</span>
+                <span class="nav-label">Nevera</span>
+              </div>
+              <div class="bottom-nav-item">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-label">Recetas</span>
+              </div>
+              <div class="bottom-nav-item">
+                <span class="nav-icon">💚</span>
+                <span class="nav-label">Salud</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating decorations -->
+      <div class="phone-deco deco-1">
+        <div class="deco-dot dot-yellow"></div>
+        ¡Pan de banano hoy! 🍌
+      </div>
+      <div class="phone-deco deco-2">
+        <div class="deco-dot dot-green"></div>
+        $45 ahorrados 💚
+      </div>
+      <div class="phone-deco deco-3">
+        <div class="deco-dot dot-red"></div>
+        2 productos por vencer ⚠️
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="reveal">
+    <div class="section-label">Ecosistema FridgeAI</div>
+    <h2 class="section-title">Todo lo que tu nevera merece saber.</h2>
+    <p class="section-sub">Un ecosistema completo de gestión del hogar: escáner IA, nutrición personalizada, y modo anti-desperdicio.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon-wrap icon-green">📷</div>
+      <h3 class="feature-title">Escáner Inteligente</h3>
+      <p class="feature-desc">Reconocimiento de objetos en tiempo real. Detecta marcas, cantidades y sugiere fechas de caducidad automáticamente sin que toques nada.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay: 0.1s">
+      <div class="feature-icon-wrap icon-yellow">💪</div>
+      <h3 class="feature-title">IA Nutricional</h3>
+      <p class="feature-desc">Se sincroniza con Apple Health y Google Fit. Si tienes colesterol alto o buscas ganar músculo, la IA prioriza recetas que cumplan esos objetivos con lo que ya tienes.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay: 0.2s">
+      <div class="feature-icon-wrap icon-soft">🚨</div>
+      <h3 class="feature-title">Modo No Waste</h3>
+      <p class="feature-desc">Notificaciones inteligentes: "Tus plátanos están muy maduros. Haz pan de banano hoy para evitar desperdiciar $2.00". Siempre a tiempo.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay: 0.1s">
+      <div class="feature-icon-wrap icon-green">📡</div>
+      <h3 class="feature-title">Hardware "El Coso"</h3>
+      <p class="feature-desc">Sensor de cámara ultra-angular con Wi-Fi que se adhiere dentro de la nevera. Toma fotos al cerrar la puerta y actualiza el inventario automáticamente.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay: 0.2s">
+      <div class="feature-icon-wrap icon-yellow">🍽️</div>
+      <h3 class="feature-title">Recetas Contextuales</h3>
+      <p class="feature-desc">No recetas genéricas. Solo recetas con exactamente lo que tienes disponible hoy, priorizando los ingredientes próximos a vencer.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay: 0.3s">
+      <div class="feature-icon-wrap icon-soft">🌍</div>
+      <h3 class="feature-title">Impacto Sostenible</h3>
+      <p class="feature-desc">Cada mes ahorras dinero y reduces toneladas de desperdicio alimentario. FridgeAI calcula tu huella de desperdicio y tu ahorro real acumulado.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="comparison" id="comparison">
+  <div class="reveal">
+    <div class="section-label">Por qué FridgeAI</div>
+    <h2 class="section-title">No es una app de recetas. Es otra categoría.</h2>
+    <p class="section-sub">Las apps tradicionales te piden que ingreses todo manualmente. FridgeAI lo hace sola.</p>
+  </div>
+  <div class="comparison-grid">
+    <div class="comp-card comp-traditional reveal">
+      <div class="comp-logo comp-trad-logo">Apps Tradicionales</div>
+      <div class="comp-tagline comp-trad-tagline">El enfoque de siempre</div>
+      <div class="comp-row">
+        <span class="comp-row-icon">⌨️</span>
+        <div class="comp-row-text"><strong>Entrada de datos</strong><span>Manual, tedioso, poco realista</span></div>
+      </div>
+      <div class="comp-row">
+        <span class="comp-row-icon">📚</span>
+        <div class="comp-row-text"><strong>Recetas</strong><span>Genéricas, sin contexto real</span></div>
+      </div>
+      <div class="comp-row">
+        <span class="comp-row-icon">❌</span>
+        <div class="comp-row-text"><strong>Salud</strong><span>No integrada con tu perfil</span></div>
+      </div>
+      <div class="comp-row">
+        <span class="comp-row-icon">📁</span>
+        <div class="comp-row-text"><strong>Impacto</strong><span>Solo organizativo, sin ahorro real</span></div>
+      </div>
+    </div>
+
+    <div class="comp-card comp-fridgeai reveal" style="transition-delay: 0.15s">
+      <div class="comp-logo comp-ai-logo">Fridge<span>AI</span></div>
+      <div class="comp-tagline comp-ai-tagline">El ecosistema inteligente</div>
+      <div class="comp-row">
+        <span class="comp-row-icon">🤖</span>
+        <div class="comp-row-text"><strong>Entrada de datos</strong><span>Automática — escáner IA 24/7</span></div>
+      </div>
+      <div class="comp-row">
+        <span class="comp-row-icon">🎯</span>
+        <div class="comp-row-text"><strong>Recetas</strong><span>Basadas en lo que YA tienes hoy</span></div>
+      </div>
+      <div class="comp-row">
+        <span class="comp-row-icon">💚</span>
+        <div class="comp-row-text"><strong>Salud</strong><span>Ajustada a tu perfil médico/fitness</span></div>
+      </div>
+      <div class="comp-row">
+        <span class="comp-row-icon">🌱</span>
+        <div class="comp-row-text"><strong>Impacto</strong><span>Ahorro real + sostenibilidad medida</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-badge">🚀 Beta disponible ahora</div>
+  <h2>Empieza a ahorrar.<br><em>Hoy mismo.</em></h2>
+  <p class="cta-sub">Descarga FridgeAI gratis. Sin tarjeta de crédito. Tu primera semana sin desperdiciar ni un centavo.</p>
+  <div class="cta-btns">
+    <button class="btn-white">📱 Descargar para iOS</button>
+    <button class="btn-outline-white">🤖 Descargar para Android</button>
+  </div>
+  <div class="cta-trust">
+    <div class="trust-item"><span class="trust-icon">🔒</span> Privacidad total</div>
+    <div class="trust-item"><span class="trust-icon">💳</span> Gratis para siempre (plan básico)</div>
+    <div class="trust-item"><span class="trust-icon">🌱</span> Carbono neutro</div>
+    <div class="trust-item"><span class="trust-icon">⭐</span> 4.9 en App Store</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Fridge<span>AI</span></div>
+    <div class="footer-tagline">"Menos desperdicio, más sabor."</div>
+  </div>
+  <div class="footer-links">
+    <a href="#">Privacidad</a>
+    <a href="#">Términos</a>
+    <a href="#">Contacto</a>
+    <a href="#">Blog</a>
+  </div>
+  <div>© 2025 FridgeAI. Todos los derechos reservados.</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
